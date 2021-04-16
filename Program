@@ -1,0 +1,178 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AsignacionCursos
+{
+    class Program 
+    {
+
+        static int validarEntero(string valor)
+        {
+            //Busco el ingreso correcto
+            bool ingresoCorrecto = int.TryParse(valor, out int result);
+            if (!ingresoCorrecto)
+            {
+                Console.WriteLine("No ha ingresado un numero entero");
+                Console.ReadKey();
+            }
+            else if (result <= 0)
+            {
+                Console.WriteLine("Debe ingresar un entero positivo");
+            }
+            else
+            {
+                ingresoCorrecto = true;
+            }
+
+            return result;
+        }
+
+        static string StringNoVacio(string mensaje)
+        {
+            string valorstr;
+            do
+            {
+                Console.WriteLine(mensaje);
+                valorstr = Console.ReadLine().ToUpper();
+                if (valorstr == "")
+                {
+                    Console.WriteLine("No puede ser vacio");
+                }
+
+            } while (valorstr == "");
+
+            return valorstr;
+             
+        }
+        static void Main(string[] args)
+        {
+
+            Dictionary<int, int> alumnos = new Dictionary<int, int>();
+            Dictionary<int, int> cursos = new Dictionary<int, int>();
+            List<int> CursosCerrados = new List<int>();
+
+
+            string opcion = "";
+            const string AgrAlu = "A";
+            const string AgrCur = "B";
+            const string RepCur = "C";
+            const string OpcSal = "S";
+            bool okLegajo = false;
+            bool okRanking = false;
+            bool okCurso = false;
+            bool okCantPart = false;
+            int Ranking;
+
+            do {
+                opcion = ("Menu Principal:\n"
+                        + AgrAlu + ": Agregar Alumno\n"
+                        + AgrCur + ": Agregar Curso y Capacidad\n"
+                        + RepCur + ": Reportar Cursos\n"
+                        + OpcSal + ": Salir");
+                switch (opcion)
+                {
+                    case AgrAlu:
+
+                        do
+                        {
+                            Console.Write("Ingrese el número de legajo del alumno: ");
+                            okLegajo = int.TryParse(Console.ReadLine(), out int LegajoAlumno);
+                            while (!okLegajo || LegajoAlumno <= 0)
+                            {
+                                Console.Write("Debe ingresar un numero de legajo valido y mayor a 0: ");
+                                continue;
+                            }
+                            if (alumnos.ContainsKey(LegajoAlumno))
+                            {
+                                Console.WriteLine("Legajo ya existente");
+                                continue;
+                                
+                            }
+                            else
+                            {
+                                Console.WriteLine("Por favor ingrese el numero de Ranking del alumno ingresado:");
+                                okRanking = int.TryParse(Console.ReadLine(), out Ranking);
+                                while (!okRanking || Ranking <= 0)
+                                {
+                                    Console.Write("El ranking debe ser siempre mayor a 0: ");
+                                    continue;
+                                }
+                                if (alumnos.ContainsValue(Ranking))
+                                {
+                                    Console.WriteLine("Legajo ya existente");
+                                    continue;
+                                }
+                                else
+                                {
+                                    alumnos.Add(LegajoAlumno, Ranking);
+                                    Console.WriteLine("El Alumno se ingreso exitosamente!");
+                                }
+                                continue;
+                            }
+                        } while (!okLegajo) ;
+                break;
+                        
+                    case AgrCur:
+                        Console.Write("Ingrese la capacidad del curso ");
+                        okCantPart = int.TryParse(Console.ReadLine(), out int capacidad);
+                        if (!okCantPart)
+                        {
+                            Console.WriteLine("Debe ingresar un entero valido");
+                            continue;
+                        }
+                        if (capacidad <= 0)
+                        {
+                            Console.WriteLine("No puede crearse un curso sin capacidad para por lo menos 1 alumno ");
+                            continue;
+                        }
+                        else
+                        {
+                            Console.Write("Ingrese la identificacion del curso ");
+                            okCurso = int.TryParse(Console.ReadLine(), out int idCurso);
+
+                            if (!okCurso)
+                            {
+                                Console.WriteLine("Debe ingresar un numero de curso valido");
+                                continue;
+                            }
+                            if (idCurso <= 0)
+                            {
+                                Console.WriteLine("la identificacion del curso debe ser mayor a 0 ");
+                                continue;
+                            }
+                            else
+                            {
+                                cursos.Add(idCurso, capacidad);
+                                Console.WriteLine($"Se agrego el curso con el id {idCurso} y con capacidad: {capacidad}");
+                                Console.ReadKey();
+                            }
+                        }
+                        break;
+                    case RepCur:
+
+                        
+                        alumnos = alumnos.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                        
+                        while (cursos.Count>0)
+                        {
+                            foreach (var alumno in alumnos)
+                            {
+                                Console.WriteLine(cursos);
+                            }
+                        }
+
+                        
+                        break;
+                    case OpcSal:
+                        break;
+                        
+                }
+            } while (opcion != OpcSal);
+        }
+
+       
+    }
+}
